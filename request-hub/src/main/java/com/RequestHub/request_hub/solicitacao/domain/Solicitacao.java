@@ -6,21 +6,24 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.antlr.v4.runtime.misc.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+
+
 @Entity
-@AllArgsConstructor
+@Table(name = "solicitacoes")
 @NoArgsConstructor
-@Getter @Setter
-@Table
+@Getter
 public class Solicitacao {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue
     @Column(nullable = false)
     private UUID id;
+
 
     @Column(nullable = false)
     private UUID solicitanteId;
@@ -37,11 +40,11 @@ public class Solicitacao {
     @NotBlank
     private String descricao;
 
-    @NotBlank
-    @Column(nullable = false, updatable = false)
+   @NotNull
+   @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 }
