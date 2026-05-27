@@ -10,9 +10,7 @@ import com.RequestHub.request_hub.solicitacao.repository.SolicitacaoRepository;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
-
-import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -44,8 +42,8 @@ public class SolicitacaoService {
         solicitacaoRepository.delete(solicitacao);
     }
 
-    @SneakyThrows
-    public void alterarStatus(UUID id, StatusSolicitacao novoStatus){
+
+    public void alterarStatus(UUID id, StatusSolicitacao novoStatus) throws BusinessException {
 
         Solicitacao solicitacao = solicitacaoRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Solicitação não encontrada"));
@@ -69,4 +67,9 @@ public class SolicitacaoService {
 
         solicitacaoRepository.save(solicitacao);
     }
+
+   public List<Solicitacao> ListarSolicitacoes(){
+        return solicitacaoRepository.findAll();
+   }
+
 }

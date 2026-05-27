@@ -1,5 +1,4 @@
 package com.RequestHub.request_hub.solicitacao.domain;
-
 import com.RequestHub.request_hub.solicitacao.exception.BusinessException;
 
 public enum StatusSolicitacao {
