@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "solicitacoes")
 @NoArgsConstructor
-@Getter
+@Getter @Setter
 public class Solicitacao {
 
     @Id
@@ -48,5 +49,9 @@ public class Solicitacao {
 
     public void setStatus(StatusSolicitacao novoStatus) {
 
+    }
+
+    public Solicitacao orElseThrow(Object solicitaçãoNãoEncontrada) {
+        return null;
     }
 }

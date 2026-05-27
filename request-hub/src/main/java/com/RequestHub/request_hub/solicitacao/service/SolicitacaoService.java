@@ -11,6 +11,7 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -25,16 +26,9 @@ public class SolicitacaoService {
         this.solicitacaoRepository = solicitacaoRepository;
     }
 
-
-
    public Solicitacao saveSolicitacao(Solicitacao solicitacao){
-
-        Solicitacao savedSolicitacao = solicitacaoRepository
-                .save(solicitacao);
-
-        return savedSolicitacao;
+       return solicitacaoRepository.save(solicitacao);
    }
-
 
     public void deletarSolicitacao(UUID id , UUID solicitanteId) throws BusinessException {
 
@@ -50,7 +44,6 @@ public class SolicitacaoService {
         solicitacaoRepository.delete(solicitacao);
     }
 
-
     @SneakyThrows
     public void alterarStatus(UUID id, StatusSolicitacao novoStatus){
 
@@ -60,5 +53,20 @@ public class SolicitacaoService {
         solicitacao.getStatus().validarTransicaoPara(novoStatus);
 
         solicitacao.setStatus(novoStatus);
+    }
+
+    public void alterarSolicitacao(UUID id) throws BusinessException {
+
+        Solicitacao solicitacao = solicitacaoRepository.
+                findById(id)
+                        .orElseThrow(() -> new NotFoundException
+                                ("Solicitação não encontrada")
+                        );
+        solicitacao.getStatus().validarAlteracao();
+
+        solicitacao.setNome("Novo nome");
+        solicitacao.setDescricao("Nova descricao");
+
+        solicitacaoRepository.save(solicitacao);
     }
 }

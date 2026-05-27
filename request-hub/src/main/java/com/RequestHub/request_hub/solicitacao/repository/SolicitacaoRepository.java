@@ -27,7 +27,6 @@ public interface SolicitacaoRepository extends JpaRepository<Solicitacao, UUID> 
        */
     Optional<Solicitacao> findByIdAndSolicitanteId(UUID id, UUID solicitanteId);
 
-
-
+     Optional<Solicitacao> findById(UUID id);
 
 }

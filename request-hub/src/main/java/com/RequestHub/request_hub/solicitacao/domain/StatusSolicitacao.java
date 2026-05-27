@@ -13,6 +13,13 @@ public enum StatusSolicitacao {
         return this == ABERTA;
     }
 
+
+    public void validarAlteracao() throws BusinessException {
+        if (this == EM_ANDAMENTO || this == ABERTA) {
+            throw new BusinessException("Solicitação finalizada não pode ser alterada");
+        }
+    }
+
     public void validarTransicaoPara(StatusSolicitacao novoStatus) throws BusinessException {
         if (this.ordinal() + 1 != novoStatus.ordinal()) {
             throw new BusinessException("Transição de status inválida");
