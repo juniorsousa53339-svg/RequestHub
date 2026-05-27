@@ -17,11 +17,10 @@ import java.util.UUID;
 public class SolicitacaoService {
 
     private final SolicitacaoRepository solicitacaoRepository;
-    private final GlobalExceptionHandler globalExceptionHandler;
+
 
     public SolicitacaoService(SolicitacaoRepository solicitacaoRepository, GlobalExceptionHandler globalExceptionHandler) {
         this.solicitacaoRepository = solicitacaoRepository;
-        this.globalExceptionHandler = globalExceptionHandler;
     }
 
 
