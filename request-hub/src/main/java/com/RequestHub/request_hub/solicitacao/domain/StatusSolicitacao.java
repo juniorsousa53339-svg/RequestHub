@@ -4,5 +4,12 @@ public enum StatusSolicitacao {
 
     ABERTA,
     EM_ANDAMENTO,
-    FINALIZADA
+    FINALIZADA;
+
+
+    public boolean podeExcluir() {
+        return this == ABERTA;
+    }
 }
+
+
