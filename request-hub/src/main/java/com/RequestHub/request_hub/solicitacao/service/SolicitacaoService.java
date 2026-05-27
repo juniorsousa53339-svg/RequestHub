@@ -1,16 +1,17 @@
 package com.RequestHub.request_hub.solicitacao.service;
 
 import com.RequestHub.request_hub.solicitacao.domain.Solicitacao;
+import com.RequestHub.request_hub.solicitacao.domain.StatusSolicitacao;
 import com.RequestHub.request_hub.solicitacao.exception.BusinessException;
 import com.RequestHub.request_hub.solicitacao.exception.NotFoundException;
 import com.RequestHub.request_hub.solicitacao.repository.SolicitacaoRepository;
 
 
-
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 
-
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -23,6 +24,16 @@ public class SolicitacaoService {
             SolicitacaoRepository solicitacaoRepository) {
         this.solicitacaoRepository = solicitacaoRepository;
     }
+
+
+
+   public Solicitacao saveSolicitacao(Solicitacao solicitacao){
+
+        Solicitacao savedSolicitacao = solicitacaoRepository
+                .save(solicitacao);
+
+        return savedSolicitacao;
+   }
 
 
     public void deletarSolicitacao(UUID id , UUID solicitanteId) throws BusinessException {
@@ -40,6 +51,14 @@ public class SolicitacaoService {
     }
 
 
+    @SneakyThrows
+    public void alterarStatus(UUID id, StatusSolicitacao novoStatus){
 
+        Solicitacao solicitacao = solicitacaoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Solicitação não encontrada"));
 
+        solicitacao.getStatus().validarTransicaoPara(novoStatus);
+
+        solicitacao.setStatus(novoStatus);
+    }
 }

@@ -45,4 +45,8 @@ public class Solicitacao {
     @NotNull
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+    public void setStatus(StatusSolicitacao novoStatus) {
+
+    }
 }

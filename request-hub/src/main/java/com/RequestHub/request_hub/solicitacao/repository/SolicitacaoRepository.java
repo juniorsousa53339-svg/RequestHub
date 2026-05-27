@@ -26,4 +26,8 @@ public interface SolicitacaoRepository extends JpaRepository<Solicitacao, UUID> 
     Buscar solicitação específica do solicitante
        */
     Optional<Solicitacao> findByIdAndSolicitanteId(UUID id, UUID solicitanteId);
+
+
+
+
 }

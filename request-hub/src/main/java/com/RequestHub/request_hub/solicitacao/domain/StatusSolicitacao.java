@@ -1,5 +1,7 @@
 package com.RequestHub.request_hub.solicitacao.domain;
 
+import com.RequestHub.request_hub.solicitacao.exception.BusinessException;
+
 public enum StatusSolicitacao {
 
     ABERTA,
@@ -9,6 +11,12 @@ public enum StatusSolicitacao {
 
     public boolean podeExcluir() {
         return this == ABERTA;
+    }
+
+    public void validarTransicaoPara(StatusSolicitacao novoStatus) throws BusinessException {
+        if (this.ordinal() + 1 != novoStatus.ordinal()) {
+            throw new BusinessException("Transição de status inválida");
+        }
     }
 }
 
