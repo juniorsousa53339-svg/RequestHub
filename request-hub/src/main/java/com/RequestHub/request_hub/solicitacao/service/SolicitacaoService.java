@@ -5,9 +5,6 @@ import com.RequestHub.request_hub.solicitacao.domain.StatusSolicitacao;
 import com.RequestHub.request_hub.solicitacao.exception.BusinessException;
 import com.RequestHub.request_hub.solicitacao.exception.NotFoundException;
 import com.RequestHub.request_hub.solicitacao.repository.SolicitacaoRepository;
-
-
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
