@@ -50,7 +50,14 @@ public class SolicitacaoService {
         solicitacao.setStatus(novoStatus);
     }
 
-    public  Solicitacao alterarSolicitacao(UUID id, String nomeAtual) throws BusinessException {
+    public  Solicitacao alterarSolicitacao(
+            UUID id,
+            String nomeAt,
+            String nomeNov,
+            String descricaoAt,
+            String descricaoNov
+
+    ) throws BusinessException {
 
         Solicitacao solicitacao = solicitacaoRepository.
                 findById(id)
@@ -59,12 +66,12 @@ public class SolicitacaoService {
                         );
         solicitacao.getStatus().validarAlteracao();
 
-        solicitacao.setNome("Novo nome");
-        solicitacao.setDescricao("Nova descricao");
+        solicitacao.setNome(nomeNov);
+        solicitacao.setDescricao(descricaoNov);
 
-        solicitacaoRepository.save(solicitacao);
 
-        return  solicitacao;
+
+        return   solicitacaoRepository.save(solicitacao);
     }
 
    public List<Solicitacao> ListarSolicitacoes(){
