@@ -50,7 +50,7 @@ public class SolicitacaoService {
         solicitacao.setStatus(novoStatus);
     }
 
-    public void alterarSolicitacao(UUID id) throws BusinessException {
+    public  Solicitacao alterarSolicitacao(UUID id, String nomeAtual) throws BusinessException {
 
         Solicitacao solicitacao = solicitacaoRepository.
                 findById(id)
@@ -63,6 +63,8 @@ public class SolicitacaoService {
         solicitacao.setDescricao("Nova descricao");
 
         solicitacaoRepository.save(solicitacao);
+
+        return  solicitacao;
     }
 
    public List<Solicitacao> ListarSolicitacoes(){
