@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.antlr.v4.runtime.misc.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -29,7 +29,10 @@ public class Solicitacao {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StatusSolicitacao status;
+    private StatusSolicitacao status = StatusSolicitacao.ABERTA;
+
+
+
 
     @Column(nullable = false)
     @NotBlank
@@ -47,13 +50,15 @@ public class Solicitacao {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+
+
+
+
     public void setStatus(StatusSolicitacao novoStatus) {
-
+     this.status = novoStatus;
     }
 
-    public Solicitacao orElseThrow(Object solicitaçãoNãoEncontrada) {
-        return null;
-    }
+
 
     public  void  alterardados(String nome, String descricao) {
         this.nome = nome;

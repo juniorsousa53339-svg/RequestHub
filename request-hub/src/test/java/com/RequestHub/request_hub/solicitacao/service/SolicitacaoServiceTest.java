@@ -2,9 +2,9 @@ package com.RequestHub.request_hub.solicitacao.service;
 
 import com.RequestHub.request_hub.solicitacao.domain.Solicitacao;
 import com.RequestHub.request_hub.solicitacao.domain.StatusSolicitacao;
+import com.RequestHub.request_hub.solicitacao.exception.BusinessException;
 import com.RequestHub.request_hub.solicitacao.exception.NotFoundException;
 import com.RequestHub.request_hub.solicitacao.repository.SolicitacaoRepository;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -35,33 +35,60 @@ class SolicitacaoServiceTest {
         UUID id = UUID.randomUUID();
         when(solicitacaoRepository.findById(id)).thenReturn(Optional.empty());
 
-        // Act + Assert (exceção)
+        // Act + Assert
         assertThrows(NotFoundException.class,
                 () -> solicitacaoService.alterarStatus(id, StatusSolicitacao.EM_ANDAMENTO));
 
-        // Assert (interação)
+        // Assert (garante que não tentou persistir)
         verify(solicitacaoRepository, never()).save(any());
     }
 
     @Test
     void deveAlterarStatusESalvar_quandoTransicaoForValida() throws Exception {
-        // Arrange
         UUID id = UUID.randomUUID();
 
         Solicitacao solicitacao = new Solicitacao();
         solicitacao.setId(id);
         solicitacao.setStatus(StatusSolicitacao.ABERTA);
 
+        // Pré-condição (te ensina a debugar)
+        assertEquals(StatusSolicitacao.ABERTA, solicitacao.getStatus());
+
         when(solicitacaoRepository.findById(id)).thenReturn(Optional.of(solicitacao));
 
         solicitacaoService.alterarStatus(id, StatusSolicitacao.EM_ANDAMENTO);
 
-        // Assert (capturar o que foi salvo)
         ArgumentCaptor<Solicitacao> captor = ArgumentCaptor.forClass(Solicitacao.class);
         verify(solicitacaoRepository).save(captor.capture());
 
-        Solicitacao salvo = captor.getValue();
-        assertEquals(StatusSolicitacao.EM_ANDAMENTO, salvo.getStatus());
+        assertEquals(StatusSolicitacao.EM_ANDAMENTO, captor.getValue().getStatus());
+    }
+
+    @Test
+    void deveLancarBusinessException_quandoStatusNaoPermitirAlteracao() throws Exception {
+        UUID id = UUID.randomUUID();
+
+        Solicitacao solicitacao = new Solicitacao();
+        solicitacao.setId(id);
+        solicitacao.setStatus(StatusSolicitacao.FINALIZADA);
+
+        // Pré-condição
+        assertEquals(StatusSolicitacao.FINALIZADA, solicitacao.getStatus());
+
+        when(solicitacaoRepository.findById(id)).thenReturn(Optional.of(solicitacao));
+
+        assertThrows(BusinessException.class,
+                () -> solicitacaoService.alterarStatus(id, StatusSolicitacao.EM_ANDAMENTO));
+
+        verify(solicitacaoRepository, never()).save(any());
+    }
+
+
+    @Test
+    void sanity_check_setter_status_funciona() {
+        Solicitacao s = new Solicitacao();
+        s.setStatus(StatusSolicitacao.FINALIZADA);
+        assertEquals(StatusSolicitacao.FINALIZADA, s.getStatus());
     }
 
 }
