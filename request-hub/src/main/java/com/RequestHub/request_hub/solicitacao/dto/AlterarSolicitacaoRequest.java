@@ -1,4 +1,4 @@
-package com.RequestHub.request_hub.solicitacao.domain;
+package com.RequestHub.request_hub.solicitacao.dto;
 
 
 import lombok.Getter;

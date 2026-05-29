@@ -1,7 +1,8 @@
 package com.RequestHub.request_hub.solicitacao.controller;
 
-import com.RequestHub.request_hub.solicitacao.domain.AlterarSolicitacaoRequest;
+import com.RequestHub.request_hub.solicitacao.dto.AlterarSolicitacaoRequest;
 import com.RequestHub.request_hub.solicitacao.domain.Solicitacao;
+import com.RequestHub.request_hub.solicitacao.dto.AlterarStatusSolicitacaoRequest;
 import com.RequestHub.request_hub.solicitacao.exception.BusinessException;
 import com.RequestHub.request_hub.solicitacao.service.SolicitacaoService;
 import jakarta.validation.Valid;
@@ -48,7 +49,7 @@ public class SolicitacaoController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> alterar(
+    public ResponseEntity<Void> alterarSolicitacao(
             @PathVariable UUID id,
             @RequestBody AlterarSolicitacaoRequest request
 
@@ -63,9 +64,20 @@ public class SolicitacaoController {
         return ResponseEntity.ok().build();
     }
 
-     /*
-         FALTA IMPLEMENTAR OS METODOS: AlterarStatus && AlterarSolicitacao
-      */
+    @PutMapping("/{id}/alterar-Status")
+    public ResponseEntity <Void> alterarStatus(
 
+            @PathVariable UUID id,
+            @RequestBody @Valid AlterarStatusSolicitacaoRequest request
+
+            ) throws BusinessException {
+
+        solicitacaoService.alterarStatus(
+                id,
+                request.getNovoStatus()
+        );
+
+        return ResponseEntity.ok().build();
+    }
 
 }

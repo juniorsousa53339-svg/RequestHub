@@ -40,16 +40,6 @@ public class SolicitacaoService {
     }
 
 
-    public void alterarStatus(UUID id, StatusSolicitacao novoStatus) throws BusinessException {
-
-        Solicitacao solicitacao = solicitacaoRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Solicitação não encontrada"));
-
-        solicitacao.getStatus().validarTransicaoPara(novoStatus);
-
-        solicitacao.setStatus(novoStatus);
-    }
-
     public  Solicitacao alterarSolicitacao(UUID id , String nome , String descricao) throws BusinessException {
         Solicitacao solicitacao = solicitacaoRepository.
                 findById(id)
@@ -68,4 +58,26 @@ public class SolicitacaoService {
         return solicitacaoRepository.findAll();
    }
 
+
+    public void alterarStatus(UUID id, StatusSolicitacao novoStatus) throws BusinessException {
+
+        Solicitacao solicitacao = solicitacaoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Solicitação não encontrada"));
+
+        // Valida se pode mudar com base na ordem o Enum
+        solicitacao.getStatus().validarTransicaoPara(novoStatus);
+
+        /*
+         Valida se o status pode ser alterado
+         ex: FINALIZADO não pode ser mais alterado
+         */
+        solicitacao.getStatus().validarAlteracao();
+
+        solicitacao.setStatus(novoStatus);
+
+       solicitacaoRepository.save(solicitacao);
+    }
 }
+
+
+
