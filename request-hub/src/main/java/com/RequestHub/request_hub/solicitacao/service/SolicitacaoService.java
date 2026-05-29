@@ -50,26 +50,16 @@ public class SolicitacaoService {
         solicitacao.setStatus(novoStatus);
     }
 
-    public  Solicitacao alterarSolicitacao(
-            UUID id,
-            String nomeAt,
-            String nomeNov,
-            String descricaoAt,
-            String descricaoNov
-
-    ) throws BusinessException {
-
+    public  Solicitacao alterarSolicitacao(UUID id , String nome , String descricao) throws BusinessException {
         Solicitacao solicitacao = solicitacaoRepository.
                 findById(id)
                         .orElseThrow(() -> new NotFoundException
                                 ("Solicitação não encontrada")
                         );
+        // Valida se o status pode ser alterado
         solicitacao.getStatus().validarAlteracao();
 
-        solicitacao.setNome(nomeNov);
-        solicitacao.setDescricao(descricaoNov);
-
-
+        solicitacao.alterardados(nome , descricao);
 
         return   solicitacaoRepository.save(solicitacao);
     }

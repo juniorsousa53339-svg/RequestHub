@@ -54,4 +54,9 @@ public class Solicitacao {
     public Solicitacao orElseThrow(Object solicitaçãoNãoEncontrada) {
         return null;
     }
+
+    public  void  alterardados(String nome, String descricao) {
+        this.nome = nome;
+        this.descricao = descricao;
+    }
 }
