@@ -3,7 +3,7 @@ package com.RequestHub.request_hub.solicitacao.controller;
 import com.RequestHub.request_hub.solicitacao.dto.AlterarSolicitacaoRequest;
 import com.RequestHub.request_hub.solicitacao.domain.Solicitacao;
 import com.RequestHub.request_hub.solicitacao.dto.AlterarStatusSolicitacaoRequest;
-import com.RequestHub.request_hub.solicitacao.exception.BusinessException;
+import com.RequestHub.request_hub.infrastructure.exception.BusinessException;
 import com.RequestHub.request_hub.solicitacao.service.SolicitacaoService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -31,12 +31,12 @@ public class SolicitacaoController {
 
     @DeleteMapping
     public ResponseEntity<Object> deleteSolicitacao(
-            @RequestParam @Valid UUID id,
-            @RequestParam @Valid UUID solicitanteId
+            @RequestParam @Valid UUID id
+
 
     ) throws BusinessException {
 
-        solicitacaoService.deletarSolicitacao(id,solicitanteId);
+        solicitacaoService.deletarSolicitacao(id);
 
         return ResponseEntity.noContent().build();
     }

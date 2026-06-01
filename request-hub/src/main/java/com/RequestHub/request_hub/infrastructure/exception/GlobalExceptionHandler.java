@@ -1,4 +1,4 @@
-package com.RequestHub.request_hub.solicitacao.exception;
+package com.RequestHub.request_hub.infrastructure.exception;
 
 
 import org.springframework.http.HttpStatus;

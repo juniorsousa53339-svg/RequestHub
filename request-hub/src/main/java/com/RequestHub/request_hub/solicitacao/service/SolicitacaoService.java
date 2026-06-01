@@ -2,8 +2,8 @@ package com.RequestHub.request_hub.solicitacao.service;
 
 import com.RequestHub.request_hub.solicitacao.domain.Solicitacao;
 import com.RequestHub.request_hub.solicitacao.domain.StatusSolicitacao;
-import com.RequestHub.request_hub.solicitacao.exception.BusinessException;
-import com.RequestHub.request_hub.solicitacao.exception.NotFoundException;
+import com.RequestHub.request_hub.infrastructure.exception.BusinessException;
+import com.RequestHub.request_hub.infrastructure.exception.NotFoundException;
 import com.RequestHub.request_hub.solicitacao.repository.SolicitacaoRepository;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +25,10 @@ public class SolicitacaoService {
        return solicitacaoRepository.save(solicitacao);
    }
 
-    public void deletarSolicitacao(UUID id , UUID solicitanteId) throws BusinessException {
+    public void deletarSolicitacao(UUID id) throws BusinessException {
 
         Solicitacao solicitacao = solicitacaoRepository
-                .findByIdAndSolicitanteId(id,solicitanteId)
+                .findById(id)
                         .orElseThrow(() -> new NotFoundException("Solicitação não encontrada"));
 
 
@@ -65,14 +65,14 @@ public class SolicitacaoService {
         Solicitacao solicitacao = solicitacaoRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Solicitação não encontrada"));
 
-        // Valida se pode mudar com base na ordem o Enum
-        solicitacao.getStatus().validarTransicaoPara(novoStatus);
-
         /*
          Valida se o status pode ser alterado
          ex: FINALIZADO não pode ser mais alterado
          */
         solicitacao.getStatus().validarAlteracao();
+
+        // Valida se pode mudar com base na ordem o Enum
+        solicitacao.getStatus().validarTransicaoPara(novoStatus);
 
         solicitacao.setStatus(novoStatus);
 

@@ -2,8 +2,8 @@ package com.RequestHub.request_hub.solicitacao.service;
 
 import com.RequestHub.request_hub.solicitacao.domain.Solicitacao;
 import com.RequestHub.request_hub.solicitacao.domain.StatusSolicitacao;
-import com.RequestHub.request_hub.solicitacao.exception.BusinessException;
-import com.RequestHub.request_hub.solicitacao.exception.NotFoundException;
+import com.RequestHub.request_hub.infrastructure.exception.BusinessException;
+import com.RequestHub.request_hub.infrastructure.exception.NotFoundException;
 import com.RequestHub.request_hub.solicitacao.repository.SolicitacaoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
