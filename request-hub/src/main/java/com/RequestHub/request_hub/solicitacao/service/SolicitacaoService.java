@@ -41,6 +41,7 @@ public class SolicitacaoService {
 
 
     public  Solicitacao alterarSolicitacao(UUID id , String nome , String descricao) throws BusinessException {
+
         Solicitacao solicitacao = solicitacaoRepository.
                 findById(id)
                         .orElseThrow(() -> new NotFoundException
@@ -51,7 +52,7 @@ public class SolicitacaoService {
 
         solicitacao.alterardados(nome , descricao);
 
-        return   solicitacaoRepository.save(solicitacao);
+        return  solicitacaoRepository.save(solicitacao);
     }
 
    public List<Solicitacao> ListarSolicitacoes(){

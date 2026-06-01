@@ -14,7 +14,7 @@ public enum StatusSolicitacao {
 
 
     public void validarAlteracao() throws BusinessException {
-        if (this == EM_ANDAMENTO || this == ABERTA) {
+        if (this == FINALIZADA) {
             throw new BusinessException("Solicitação finalizada não pode ser alterada");
         }
     }

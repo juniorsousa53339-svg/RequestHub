@@ -26,6 +26,7 @@ class SolicitacaoServiceTest {
     @Mock
     private SolicitacaoRepository solicitacaoRepository;
 
+
     @InjectMocks
     private SolicitacaoService solicitacaoService;
 
