@@ -4,14 +4,18 @@ import com.RequestHub.request_hub.solicitacao.dto.AlterarSolicitacaoRequest;
 import com.RequestHub.request_hub.solicitacao.domain.Solicitacao;
 import com.RequestHub.request_hub.solicitacao.dto.AlterarStatusSolicitacaoRequest;
 import com.RequestHub.request_hub.infrastructure.exception.BusinessException;
+import com.RequestHub.request_hub.solicitacao.dto.CriarSolicitacaoRequest;
 import com.RequestHub.request_hub.solicitacao.service.SolicitacaoService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
+@RestController
+@RequestMapping("/solicitacoes")
 public class SolicitacaoController {
 
 
@@ -23,15 +27,23 @@ public class SolicitacaoController {
         this.solicitacaoService = solicitacaoService;
     }
 
+    @PreAuthorize("hasRole('SOLICITANTE')")
     @PostMapping
-    public Solicitacao saveSolicitacao(@RequestBody @Valid Solicitacao solicitacao) {
-        var savedSolicitacao = solicitacaoService.saveSolicitacao(solicitacao);
-        return savedSolicitacao;
+    public ResponseEntity<Solicitacao> criar(@RequestBody @Valid CriarSolicitacaoRequest
+                                                         criarSolicitacaoRequest) {
+
+        Solicitacao solicitacao = new Solicitacao();
+        solicitacao.setNome(criarSolicitacaoRequest.getNome());
+        solicitacao.setDescricao(criarSolicitacaoRequest.getDescricao());
+
+        Solicitacao salva = solicitacaoService.saveSolicitacao(solicitacao);
+        return ResponseEntity.status(201).body(salva);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Object> deleteSolicitacao(
-            @RequestParam @Valid UUID id
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(
+            @PathVariable UUID id
 
 
     ) throws BusinessException {
@@ -41,13 +53,14 @@ public class SolicitacaoController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/listar")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
     public List<Solicitacao> ListarSolicitacoes(){
         var lista = solicitacaoService.ListarSolicitacoes();
         return lista;
     }
 
-
+    @PreAuthorize("hasRole('SOLICITANTE')")
     @PutMapping("/{id}")
     public ResponseEntity<Void> alterarSolicitacao(
             @PathVariable UUID id,
@@ -64,7 +77,8 @@ public class SolicitacaoController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{id}/alterar-Status")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}/status")
     public ResponseEntity <Void> alterarStatus(
 
             @PathVariable UUID id,
