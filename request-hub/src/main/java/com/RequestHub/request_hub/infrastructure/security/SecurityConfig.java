@@ -43,10 +43,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/solicitacoes/*/status").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/solicitacoes/*").hasRole("ADMIN")
 
+
                         // SOLICITANTE
                         .requestMatchers(HttpMethod.POST, "/solicitacoes").hasRole("SOLICITANTE")
                         .requestMatchers(HttpMethod.GET, "/solicitacoes/minhas").hasRole("SOLICITANTE")
-                        .requestMatchers(HttpMethod.PUT, "/solicitacoes/*/cancelar").hasRole("SOLICITANTE")
                         .requestMatchers(HttpMethod.PUT, "/solicitacoes/*").hasRole("SOLICITANTE")
 
                         // qualquer outra rota precisa estar logado

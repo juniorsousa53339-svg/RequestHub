@@ -5,6 +5,7 @@ import com.RequestHub.request_hub.solicitacao.domain.StatusSolicitacao;
 import com.RequestHub.request_hub.infrastructure.exception.BusinessException;
 import com.RequestHub.request_hub.infrastructure.exception.NotFoundException;
 import com.RequestHub.request_hub.solicitacao.repository.SolicitacaoRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class SolicitacaoService {
    public Solicitacao saveSolicitacao(Solicitacao solicitacao){
        return solicitacaoRepository.save(solicitacao);
    }
+
 
     public void deletarSolicitacao(UUID id) throws BusinessException {
 
