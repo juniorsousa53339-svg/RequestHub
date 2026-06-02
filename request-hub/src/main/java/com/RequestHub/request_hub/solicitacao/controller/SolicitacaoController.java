@@ -41,7 +41,7 @@ public class SolicitacaoController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
-            @PathVariable UUID id
+            @PathVariable  UUID id
 
 
     ) throws BusinessException {
@@ -65,7 +65,7 @@ public class SolicitacaoController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> alterarSolicitacao(
             @PathVariable UUID id,
-            @RequestBody AlterarSolicitacaoRequest request
+            @RequestBody @Valid AlterarSolicitacaoRequest request
 
             ) throws BusinessException {
 

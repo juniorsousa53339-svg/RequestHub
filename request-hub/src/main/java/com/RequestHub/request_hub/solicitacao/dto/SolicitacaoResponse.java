@@ -11,16 +11,16 @@ import java.time.LocalDateTime;
 @Getter @Setter
 public class SolicitacaoResponse {
 
-    private String nomeSolicitante;
-    private String descricaoSolicitante;
+    private String nome;
+    private String descricao;
     private StatusSolicitacao status;
     private LocalDateTime createdAt;
 
 
     public static SolicitacaoResponse fromEntity(Solicitacao s) {
         SolicitacaoResponse r = new SolicitacaoResponse();
-        r.setNomeSolicitante(s.getNome());
-        r.setDescricaoSolicitante(s.getDescricao());
+        r.setNome(s.getNome());
+        r.setDescricao(s.getDescricao());
         r.setStatus(s.getStatus());
         r.setCreatedAt(s.getCreatedAt());
         return r;
