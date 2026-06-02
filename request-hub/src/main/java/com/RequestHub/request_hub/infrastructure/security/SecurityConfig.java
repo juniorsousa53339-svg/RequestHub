@@ -26,7 +26,7 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain
-    springSecurityFilterChain(org.springframework.security.config.annotation.web.builders.
+    springSecurityFilterChainTest(org.springframework.security.config.annotation.web.builders.
                                       HttpSecurity http) throws Exception {
 
         http

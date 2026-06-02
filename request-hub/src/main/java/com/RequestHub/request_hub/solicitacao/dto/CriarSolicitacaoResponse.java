@@ -13,8 +13,6 @@ public class CriarSolicitacaoResponse {
     private String descricao;
 
 
-
-
     public static CriarSolicitacaoResponse fromEntity(Solicitacao s) {
         CriarSolicitacaoResponse r = new CriarSolicitacaoResponse();
 

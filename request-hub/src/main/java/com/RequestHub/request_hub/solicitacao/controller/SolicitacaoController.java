@@ -1,11 +1,8 @@
 package com.RequestHub.request_hub.solicitacao.controller;
 
-import com.RequestHub.request_hub.solicitacao.dto.AlterarSolicitacaoRequest;
+import com.RequestHub.request_hub.solicitacao.dto.*;
 import com.RequestHub.request_hub.solicitacao.domain.Solicitacao;
-import com.RequestHub.request_hub.solicitacao.dto.AlterarStatusSolicitacaoRequest;
 import com.RequestHub.request_hub.infrastructure.exception.BusinessException;
-import com.RequestHub.request_hub.solicitacao.dto.CriarSolicitacaoRequest;
-import com.RequestHub.request_hub.solicitacao.dto.CriarSolicitacaoResponse;
 import com.RequestHub.request_hub.solicitacao.service.SolicitacaoService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -56,9 +53,12 @@ public class SolicitacaoController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public List<Solicitacao> ListarSolicitacoes(){
-        var lista = solicitacaoService.ListarSolicitacoes();
-        return lista;
+    public List<SolicitacaoResponse> ListarSolicitacoes(){
+
+        return solicitacaoService.ListarSolicitacoes()
+                .stream()
+                .map(SolicitacaoResponse::fromEntity)
+                .toList();
     }
 
     @PreAuthorize("hasRole('SOLICITANTE')")
