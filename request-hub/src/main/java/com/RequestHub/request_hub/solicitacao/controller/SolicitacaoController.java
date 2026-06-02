@@ -5,6 +5,7 @@ import com.RequestHub.request_hub.solicitacao.domain.Solicitacao;
 import com.RequestHub.request_hub.solicitacao.dto.AlterarStatusSolicitacaoRequest;
 import com.RequestHub.request_hub.infrastructure.exception.BusinessException;
 import com.RequestHub.request_hub.solicitacao.dto.CriarSolicitacaoRequest;
+import com.RequestHub.request_hub.solicitacao.dto.CriarSolicitacaoResponse;
 import com.RequestHub.request_hub.solicitacao.service.SolicitacaoService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -29,15 +30,15 @@ public class SolicitacaoController {
 
     @PreAuthorize("hasRole('SOLICITANTE')")
     @PostMapping
-    public ResponseEntity<Solicitacao> criar(@RequestBody @Valid CriarSolicitacaoRequest
-                                                         criarSolicitacaoRequest) {
+    public ResponseEntity<CriarSolicitacaoResponse> criar(
+            @RequestBody @Valid CriarSolicitacaoRequest criarSolicitacaoRequest) {
 
         Solicitacao solicitacao = new Solicitacao();
         solicitacao.setNome(criarSolicitacaoRequest.getNome());
         solicitacao.setDescricao(criarSolicitacaoRequest.getDescricao());
 
         Solicitacao salva = solicitacaoService.saveSolicitacao(solicitacao);
-        return ResponseEntity.status(201).body(salva);
+        return ResponseEntity.status(201).body(CriarSolicitacaoResponse.fromEntity(salva));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
