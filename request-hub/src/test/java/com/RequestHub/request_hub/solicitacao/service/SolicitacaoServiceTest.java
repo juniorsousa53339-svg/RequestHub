@@ -84,12 +84,36 @@ class SolicitacaoServiceTest {
         verify(solicitacaoRepository, never()).save(any());
     }
 
-
     @Test
     void sanity_check_setter_status_funciona() {
         Solicitacao s = new Solicitacao();
         s.setStatus(StatusSolicitacao.FINALIZADA);
         assertEquals(StatusSolicitacao.FINALIZADA, s.getStatus());
+    }
+
+    @Test
+    void deveAlterarSolicitacaoESalvara() throws Exception {
+
+        UUID id = UUID.randomUUID();
+
+        Solicitacao solicitacao = new Solicitacao();
+        solicitacao.setId(id);
+        solicitacao.setStatus(StatusSolicitacao.ABERTA);
+        solicitacao.setNome("antigo");
+        solicitacao.setDescricao("antiga");
+
+        when(solicitacaoRepository.findById(id)).thenReturn(Optional.of(solicitacao));
+
+        solicitacaoService.alterarSolicitacao(id,"Novo","Nova");
+
+        ArgumentCaptor<Solicitacao> captor = ArgumentCaptor.forClass(Solicitacao.class);
+        verify(solicitacaoRepository).save(captor.capture());
+
+
+        assertEquals("Novo", solicitacao.getNome(),"Nome deve ser atualizado");
+        assertEquals("Nova", captor.getValue().getDescricao(),"Descrição deve ser atualizada");
+
+        verify(solicitacaoRepository, times(1)).save(captor.capture());
     }
 
 }
