@@ -21,21 +21,40 @@ public class SolicitacaoController {
 
 
 
-    public SolicitacaoController(SolicitacaoService solicitacaoService) {
+    public SolicitacaoController(
+            SolicitacaoService
+                    solicitacaoService
+    ) {
         this.solicitacaoService = solicitacaoService;
     }
 
     @PreAuthorize("hasRole('SOLICITANTE')")
     @PostMapping
     public ResponseEntity<CriarSolicitacaoResponse> criar(
-            @RequestBody @Valid CriarSolicitacaoRequest criarSolicitacaoRequest) {
+            @RequestBody @Valid CriarSolicitacaoRequest
+                    criarSolicitacaoRequest
+    ) {
 
         Solicitacao solicitacao = new Solicitacao();
-        solicitacao.setNome(criarSolicitacaoRequest.getNome());
-        solicitacao.setDescricao(criarSolicitacaoRequest.getDescricao());
+        solicitacao.setNome
+                (criarSolicitacaoRequest.
+                        getNome());
 
-        Solicitacao salva = solicitacaoService.saveSolicitacao(solicitacao);
-        return ResponseEntity.status(201).body(CriarSolicitacaoResponse.fromEntity(salva));
+        solicitacao.
+                setDescricao
+                        (criarSolicitacaoRequest.
+                                getDescricao());
+
+        Solicitacao salva =
+                solicitacaoService.
+                        saveSolicitacao
+                                (solicitacao);
+
+        return ResponseEntity.
+                status(201).
+                body(CriarSolicitacaoResponse.
+                        fromEntity(salva)
+                );
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -43,10 +62,11 @@ public class SolicitacaoController {
     public ResponseEntity<Void> delete(
             @PathVariable  UUID id
 
-
     ) throws BusinessException {
 
-        solicitacaoService.deletarSolicitacao(id);
+        solicitacaoService.
+                deletarSolicitacao
+                        (id);
 
         return ResponseEntity.noContent().build();
     }
@@ -55,7 +75,9 @@ public class SolicitacaoController {
     @GetMapping
     public List<SolicitacaoResponse> ListarSolicitacoes(){
 
-        return solicitacaoService.ListarSolicitacoes()
+        return solicitacaoService.
+
+                ListarSolicitacoes()
                 .stream()
                 .map(SolicitacaoResponse::fromEntity)
                 .toList();
@@ -69,7 +91,8 @@ public class SolicitacaoController {
 
             ) throws BusinessException {
 
-        solicitacaoService.alterarSolicitacao(
+        solicitacaoService.alterarSolicitacao
+                (
                 id,
                 request.getNome(),
                 request.getDescricao()

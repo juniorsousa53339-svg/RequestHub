@@ -12,21 +12,5 @@ import java.util.UUID;
 
 public interface SolicitacaoRepository extends JpaRepository<Solicitacao, UUID> {
 
-  /*
-    Solicitante listar suas solicitações
-   */
-  List<Solicitacao> findBySolicitanteId(UUID solicitanteId);
-
-  /*
-    Admin listar por status
-   */
-  List<Solicitacao> findByStatus(StatusSolicitacao status);
-
-    /*
-    Buscar solicitação específica do solicitante
-       */
-    Optional<Solicitacao> findByIdAndSolicitanteId(UUID id, UUID solicitanteId);
-
      Optional<Solicitacao> findById(UUID id);
-
 }

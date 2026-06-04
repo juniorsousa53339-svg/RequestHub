@@ -23,16 +23,12 @@ public class Solicitacao {
     @Column(nullable = false)
     private UUID id;
 
-
     @Column(nullable = false)
     private UUID solicitanteId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusSolicitacao status = StatusSolicitacao.ABERTA;
-
-
-
 
     @Column(nullable = false)
     @NotBlank
@@ -50,15 +46,9 @@ public class Solicitacao {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-
-
-
-
     public void setStatus(StatusSolicitacao novoStatus) {
      this.status = novoStatus;
     }
-
-
 
     public  void  alterardados(String nome, String descricao) {
         this.nome = nome;

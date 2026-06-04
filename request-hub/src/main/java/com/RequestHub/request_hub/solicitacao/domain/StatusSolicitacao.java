@@ -15,11 +15,15 @@ public enum StatusSolicitacao {
 
     public void validarAlteracao() throws BusinessException {
         if (this == FINALIZADA) {
-            throw new BusinessException("Solicitação finalizada não pode ser alterada");
+            throw new BusinessException
+                    ("Solicitação finalizada não pode ser alterada");
         }
     }
 
-    public void validarTransicaoPara(StatusSolicitacao novoStatus) throws BusinessException {
+    public void validarTransicaoPara(
+            StatusSolicitacao novoStatus
+    ) throws BusinessException {
+
         if (this.ordinal() + 1 != novoStatus.ordinal()) {
             throw new BusinessException("Transição de status inválida");
         }
