@@ -1,1 +1,19 @@
-<p>login works!</p>
+<section class="login">
+  <h2>Login</h2>
+
+  <form (ngSubmit)="onSubmit()">
+    <label>
+      Usuário
+      <input name="username" [(ngModel)]="username" />
+    </label>
+
+    <label>
+      Senha
+      <input name="password" type="password" [(ngModel)]="password" />
+    </label>
+
+    <button type="submit">Entrar</button>
+
+    <p *ngIf="error" style="color: red">{{ error }}</p>
+  </form>
+</section>
