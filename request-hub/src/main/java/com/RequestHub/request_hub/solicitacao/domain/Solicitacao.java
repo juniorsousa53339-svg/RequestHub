@@ -5,7 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import jakarta.validation.constraints.NotNull;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -38,11 +40,11 @@ public class Solicitacao {
     @NotBlank
     private String descricao;
 
-   @NotNull
+    @CreationTimestamp
    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @NotNull
+    @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
@@ -54,4 +56,5 @@ public class Solicitacao {
         this.nome = nome;
         this.descricao = descricao;
     }
+
 }

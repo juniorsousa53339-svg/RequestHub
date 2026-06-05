@@ -4,10 +4,12 @@ import com.RequestHub.request_hub.solicitacao.domain.Solicitacao;
 import com.RequestHub.request_hub.solicitacao.domain.StatusSolicitacao;
 import com.RequestHub.request_hub.infrastructure.exception.BusinessException;
 import com.RequestHub.request_hub.infrastructure.exception.NotFoundException;
+import com.RequestHub.request_hub.solicitacao.dto.CriarSolicitacaoRequest;
 import com.RequestHub.request_hub.solicitacao.repository.SolicitacaoRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,19 +26,25 @@ public class SolicitacaoService {
                 solicitacaoRepository;
     }
 
-   public Solicitacao saveSolicitacao(
-           Solicitacao solicitacao){
+   public Solicitacao criarSolicitacao(CriarSolicitacaoRequest request, String username) {
 
-       return solicitacaoRepository.
-               save(solicitacao);
+        Solicitacao solicitacao = new Solicitacao();
+        solicitacao.setNome(request.getNome());
+        solicitacao.setDescricao(request.getDescricao());
+
+
+       UUID solicitanteId = UUID.nameUUIDFromBytes(username.getBytes(StandardCharsets.UTF_8));
+       solicitacao.setSolicitanteId(solicitanteId);
+
+
+       return solicitacaoRepository.save(solicitacao);
    }
 
 
     public void deletarSolicitacao(UUID id)
             throws BusinessException {
 
-        Solicitacao solicitacao =
-                solicitacaoRepository
+        Solicitacao solicitacao = solicitacaoRepository
                 .findById(id)
                         .orElseThrow(()
                                 -> new NotFoundException
@@ -108,7 +116,7 @@ public class SolicitacaoService {
                 setStatus
                         (novoStatus);
 
-       solicitacaoRepository.
+        solicitacaoRepository.
                save(solicitacao);
     }
 }

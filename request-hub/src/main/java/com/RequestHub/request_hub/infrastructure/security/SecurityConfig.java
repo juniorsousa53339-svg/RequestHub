@@ -44,6 +44,8 @@ public class SecurityConfig {
                         // liberar console H2 no dev
                         .requestMatchers("/h2-console/**").permitAll()
 
+                        .requestMatchers(HttpMethod.GET, "/auth/me").authenticated()
+
                         // ADMIN
                         .requestMatchers(HttpMethod.GET, "/solicitacoes").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/solicitacoes/*/status").hasRole("ADMIN")

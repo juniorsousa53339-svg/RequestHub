@@ -24,4 +24,10 @@ public class GlobalExceptionHandler {
                 .body(ex.getMessage());
     }
 
+
+    @ExceptionHandler(jakarta.validation.ConstraintViolationException.class)
+    public ResponseEntity<String> handleConstraintViolation(jakarta.validation.ConstraintViolationException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
 }
