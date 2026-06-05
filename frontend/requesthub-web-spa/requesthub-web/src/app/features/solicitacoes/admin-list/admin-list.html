@@ -1,0 +1,20 @@
+<section>
+  <h2>Solicitações (Admin)</h2>
+
+  <!-- Renderiza quando o observable retorna -->
+  <ng-container *ngIf="solicitacoes$ | async as solicitacoes; else loading">
+    <p *ngIf="solicitacoes.length === 0">Nenhuma solicitação encontrada.</p>
+
+    <ul *ngIf="solicitacoes.length > 0">
+      <li *ngFor="let s of solicitacoes">
+        <strong>{{ s.nome }}</strong> — {{ s.descricao }}
+        <span> ({{ s.status }})</span>
+      </li>
+    </ul>
+  </ng-container>
+
+  <!-- Placeholder de loading -->
+  <ng-template #loading>
+    <p>Carregando...</p>
+  </ng-template>
+</section>
