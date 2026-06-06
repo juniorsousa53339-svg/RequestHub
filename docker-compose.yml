@@ -1,3 +1,4 @@
+
 services:
   db:
     image: postgres:16-alpine
@@ -25,6 +26,15 @@ services:
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
     depends_on:
       - db
+
+  frontend:
+    build:
+      context: ./frontend/requesthub-web-spa/requesthub-web
+    container_name: requesthub-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
 
 volumes:
   pgdata:
