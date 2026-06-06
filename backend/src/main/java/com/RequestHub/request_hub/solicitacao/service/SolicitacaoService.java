@@ -4,10 +4,12 @@ import com.RequestHub.request_hub.solicitacao.domain.Solicitacao;
 import com.RequestHub.request_hub.solicitacao.domain.StatusSolicitacao;
 import com.RequestHub.request_hub.infrastructure.exception.BusinessException;
 import com.RequestHub.request_hub.infrastructure.exception.NotFoundException;
+import com.RequestHub.request_hub.solicitacao.dto.CriarSolicitacaoRequest;
 import com.RequestHub.request_hub.solicitacao.repository.SolicitacaoRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,68 +20,112 @@ public class SolicitacaoService {
 
 
     public SolicitacaoService(
-            SolicitacaoRepository solicitacaoRepository) {
-        this.solicitacaoRepository = solicitacaoRepository;
+            SolicitacaoRepository solicitacaoRepository
+            ) {
+        this.solicitacaoRepository =
+                solicitacaoRepository;
     }
 
-   public Solicitacao saveSolicitacao(Solicitacao solicitacao){
+   public Solicitacao criarSolicitacao(CriarSolicitacaoRequest request, String username) {
+
+        Solicitacao solicitacao = new Solicitacao();
+        solicitacao.setNome(request.getNome());
+        solicitacao.setDescricao(request.getDescricao());
+
+
+       UUID solicitanteId = UUID.nameUUIDFromBytes(username.getBytes(StandardCharsets.UTF_8));
+       solicitacao.setSolicitanteId(solicitanteId);
+
+
        return solicitacaoRepository.save(solicitacao);
    }
 
 
-    public void deletarSolicitacao(UUID id) throws BusinessException {
+    public void deletarSolicitacao(UUID id)
+            throws BusinessException {
 
         Solicitacao solicitacao = solicitacaoRepository
                 .findById(id)
-                        .orElseThrow(() -> new NotFoundException("Solicitação não encontrada"));
+                        .orElseThrow(()
+                                -> new NotFoundException
+                                ("Solicitação não encontrada"));
 
 
         if (!solicitacao.getStatus().podeExcluir()) {
             throw new BusinessException("Solicitação não pode ser excluída");
         }
 
-        solicitacaoRepository.delete(solicitacao);
+        solicitacaoRepository.
+                delete(solicitacao);
     }
 
 
-    public  Solicitacao alterarSolicitacao(UUID id , String nome , String descricao) throws BusinessException {
+    public  Solicitacao alterarSolicitacao(
 
-        Solicitacao solicitacao = solicitacaoRepository.
+            UUID id ,
+            String nome ,
+            String descricao
+
+    ) throws BusinessException {
+
+        Solicitacao solicitacao =
+                solicitacaoRepository.
                 findById(id)
-                        .orElseThrow(() -> new NotFoundException
+                        .orElseThrow(()
+                                -> new NotFoundException
                                 ("Solicitação não encontrada")
                         );
-        // Valida se o status pode ser alterado
-        solicitacao.getStatus().validarAlteracao();
 
-        solicitacao.alterardados(nome , descricao);
 
-        return  solicitacaoRepository.save(solicitacao);
+        solicitacao.getStatus()
+                .validarAlteracao();
+
+        solicitacao.
+                alterardados
+                        (nome , descricao);
+
+        return  solicitacaoRepository.
+                save(solicitacao);
     }
 
    public List<Solicitacao> ListarSolicitacoes(){
-        return solicitacaoRepository.findAll();
+        return solicitacaoRepository.
+                findAll();
    }
 
 
-    public void alterarStatus(UUID id, StatusSolicitacao novoStatus) throws BusinessException {
+    public void alterarStatus(UUID id, StatusSolicitacao novoStatus)
+            throws BusinessException {
 
-        Solicitacao solicitacao = solicitacaoRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Solicitação não encontrada"));
+        Solicitacao solicitacao =
+                solicitacaoRepository.
+                        findById(id)
 
-        /*
-         Valida se o status pode ser alterado
-         ex: FINALIZADO não pode ser mais alterado
-         */
-        solicitacao.getStatus().validarAlteracao();
+                .orElseThrow(()
+                        -> new NotFoundException
+                        ("Solicitação não encontrada"));
 
-        // Valida se pode mudar com base na ordem o Enum
-        solicitacao.getStatus().validarTransicaoPara(novoStatus);
+        solicitacao.getStatus()
+                .validarAlteracao();
 
-        solicitacao.setStatus(novoStatus);
+        solicitacao.getStatus().
+                validarTransicaoPara
+                        (novoStatus);
 
-       solicitacaoRepository.save(solicitacao);
+        solicitacao.
+                setStatus
+                        (novoStatus);
+
+        solicitacaoRepository.
+               save(solicitacao);
     }
+
+
+    public List<Solicitacao> listarMinhas(String username) {
+        UUID solicitanteId = UUID.nameUUIDFromBytes(username.getBytes(StandardCharsets.UTF_8));
+        return solicitacaoRepository.findBySolicitanteId(solicitanteId);
+    }
+
 }
 
 

@@ -5,7 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import jakarta.validation.constraints.NotNull;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -23,16 +25,12 @@ public class Solicitacao {
     @Column(nullable = false)
     private UUID id;
 
-
     @Column(nullable = false)
     private UUID solicitanteId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusSolicitacao status = StatusSolicitacao.ABERTA;
-
-
-
 
     @Column(nullable = false)
     @NotBlank
@@ -42,26 +40,21 @@ public class Solicitacao {
     @NotBlank
     private String descricao;
 
-   @NotNull
+    @CreationTimestamp
    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @NotNull
+    @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-
-
-
 
     public void setStatus(StatusSolicitacao novoStatus) {
      this.status = novoStatus;
     }
 
-
-
     public  void  alterardados(String nome, String descricao) {
         this.nome = nome;
         this.descricao = descricao;
     }
+
 }

@@ -5,12 +5,17 @@ import com.RequestHub.request_hub.solicitacao.domain.Solicitacao;
 import com.RequestHub.request_hub.infrastructure.exception.BusinessException;
 import com.RequestHub.request_hub.solicitacao.service.SolicitacaoService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/solicitacoes")
@@ -21,32 +26,38 @@ public class SolicitacaoController {
 
 
 
-    public SolicitacaoController(SolicitacaoService solicitacaoService) {
+    public SolicitacaoController(
+            SolicitacaoService
+                    solicitacaoService
+    ) {
         this.solicitacaoService = solicitacaoService;
     }
 
-    @PreAuthorize("hasRole('SOLICITANTE')")
+
     @PostMapping
-    public ResponseEntity<CriarSolicitacaoResponse> criar(
-            @RequestBody @Valid CriarSolicitacaoRequest criarSolicitacaoRequest) {
+    @PreAuthorize("hasRole('SOLICITANTE')")
+    public ResponseEntity<SolicitacaoResponse> criar(
+            @RequestBody @Valid CriarSolicitacaoRequest request,
+            Authentication authentication
+    ) {
+        String username = authentication.getName(); // "luciano"
 
-        Solicitacao solicitacao = new Solicitacao();
-        solicitacao.setNome(criarSolicitacaoRequest.getNome());
-        solicitacao.setDescricao(criarSolicitacaoRequest.getDescricao());
+        Solicitacao salva = solicitacaoService.criarSolicitacao(request, username);
 
-        Solicitacao salva = solicitacaoService.saveSolicitacao(solicitacao);
-        return ResponseEntity.status(201).body(CriarSolicitacaoResponse.fromEntity(salva));
+        return ResponseEntity.status(201).body(SolicitacaoResponse.fromEntity(salva));
     }
+
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
             @PathVariable  UUID id
 
-
     ) throws BusinessException {
 
-        solicitacaoService.deletarSolicitacao(id);
+        solicitacaoService.
+                deletarSolicitacao
+                        (id);
 
         return ResponseEntity.noContent().build();
     }
@@ -55,7 +66,9 @@ public class SolicitacaoController {
     @GetMapping
     public List<SolicitacaoResponse> ListarSolicitacoes(){
 
-        return solicitacaoService.ListarSolicitacoes()
+        return solicitacaoService.
+
+                ListarSolicitacoes()
                 .stream()
                 .map(SolicitacaoResponse::fromEntity)
                 .toList();
@@ -69,7 +82,8 @@ public class SolicitacaoController {
 
             ) throws BusinessException {
 
-        solicitacaoService.alterarSolicitacao(
+        solicitacaoService.alterarSolicitacao
+                (
                 id,
                 request.getNome(),
                 request.getDescricao()
@@ -94,5 +108,28 @@ public class SolicitacaoController {
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/auth/me")
+    public Map<String, Object> me(Authentication auth) {
+        return Map.of("username", auth.getName(),
+                "roles",auth.getAuthorities().stream()
+
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.toList())
+        );
+    }
+
+
+    @GetMapping("/minhas")
+    @PreAuthorize("hasRole('SOLICITANTE')")
+    public List<SolicitacaoResponse> minhas(Authentication authentication) {
+        String username = authentication.getName();
+
+        return solicitacaoService.listarMinhas(username)
+                .stream()
+                .map(SolicitacaoResponse::fromEntity)
+                .toList();
+    }
+
 
 }
