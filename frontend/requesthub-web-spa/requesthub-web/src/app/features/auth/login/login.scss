@@ -1,0 +1,45 @@
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 28px; /* dá respiro nas bordas */
+}
+
+/* o segredo: centraliza o card DENTRO do container */
+.login-page .container {
+  display: flex;
+  justify-content: center;
+}
+
+.login-card {
+  width: min(420px, 100%);
+  padding: 22px; /* espaço interno */
+}
+
+.form {
+  display: grid;
+  gap: 14px; /* espaço entre campos */
+}
+
+.field {
+  display: grid;
+  gap: 8px; /* label mais separado do input */
+}
+
+.btn-primary {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+
+.actions {
+  display: flex;
+  justify-content: center;  /* ou flex-start se quiser à esquerda */
+}
+
+.actions .btn {
+  width: auto;             /* garante que não vira 100% */
+}
+

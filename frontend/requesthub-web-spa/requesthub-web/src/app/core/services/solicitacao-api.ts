@@ -18,5 +18,11 @@ private readonly baseUrl = `${environment.apiUrl}/solicitacoes`;
     return this.http.get<SolicitacaoResponse[]>(this.baseUrl);
   }
 
+
+public deletar(id: string) {
+  return this.http.delete<void>(`${this.baseUrl}/${id}`);
+}
+
+
 }
 

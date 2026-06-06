@@ -1,20 +1,65 @@
-<section>
-  <h2>Solicitações (Admin)</h2>
+<div class="container page">
+  <header class="page-header">
+    <div>
+      <h2 class="title">Solicitações</h2>
+      <p class="muted">Visão do administrador (todas as solicitações).</p>
+    </div>
 
-  <!-- Renderiza quando o observable retorna -->
+    <!-- Trocar usuário: vai pro login e limpa credencial -->
+    <a class="btn btn-ghost" routerLink="/login" (click)="trocarUsuario()">
+      Trocar usuário
+    </a>
+  </header>
+
   <ng-container *ngIf="solicitacoes$ | async as solicitacoes; else loading">
-    <p *ngIf="solicitacoes.length === 0">Nenhuma solicitação encontrada.</p>
+    <p *ngIf="solicitacoes.length === 0" class="muted">
+      Nenhuma solicitação encontrada.
+    </p>
 
-    <ul *ngIf="solicitacoes.length > 0">
-      <li *ngFor="let s of solicitacoes">
-        <strong>{{ s.nome }}</strong> — {{ s.descricao }}
-        <span> ({{ s.status }})</span>
-      </li>
-    </ul>
+    <div class="cards" *ngIf="solicitacoes.length > 0">
+      <article class="ticket" *ngFor="let s of solicitacoes">
+        <!-- topo do card -->
+        <div class="ticket-top">
+          <div>
+            <div class="ticket-title">{{ s.nome }}</div>
+            <div class="ticket-sub muted">
+              {{ s.createdAt | date:'dd/MM/yyyy HH:mm' }}
+            </div>
+          </div>
+
+          <span class="badge"
+                [ngClass]="{
+                  'badge-open': s.status === 'ABERTA',
+                  'badge-progress': s.status === 'EM_ANDAMENTO',
+                  'badge-done': s.status === 'FINALIZADA'
+                }">
+            {{ s.status }}
+          </span>
+        </div>
+
+        <!-- descrição -->
+        <div class="ticket-desc">
+          {{ s.descricao }}
+        </div>
+
+        <!-- ações (já deixa espaço pra status/deletar/editar) -->
+        <div class="ticket-actions">
+        <!--  <a class="btn btn-ghost btn-sm"
+             [routerLink]="['/solicitacoes', s.id, 'editar']">
+            Editar
+          </a> -->
+
+
+<button type="button" class="btn btn-danger btn-sm" (click)="confirmarExcluir(s.id)">
+  Excluir
+</button>
+
+        </div>
+      </article>
+    </div>
   </ng-container>
 
-  <!-- Placeholder de loading -->
   <ng-template #loading>
-    <p>Carregando...</p>
+    <p class="muted">Carregando...</p>
   </ng-template>
-</section>
+</div>

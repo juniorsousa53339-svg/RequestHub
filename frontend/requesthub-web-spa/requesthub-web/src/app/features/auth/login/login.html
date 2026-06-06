@@ -1,19 +1,48 @@
-<section class="login">
-  <h2>Login</h2>
+<div class="login-page" id="/login">
 
-  <form (ngSubmit)="onSubmit()">
-    <label>
-      Usuário
-      <input name="username" [(ngModel)]="username" />
-    </label>
+  <div class="container">
+    <div class="card login-card">
+      <header class="login-header">
+        <h1 class="title">RequestHub</h1>
+        <p class="muted">Entre para acessar o sistema.</p>
+      </header>
 
-    <label>
-      Senha
-      <input name="password" type="password" [(ngModel)]="password" />
-    </label>
+      <form class="form" (ngSubmit)="onSubmit()">
+        <div class="field">
+          <label class="label" for="username">Usuário</label>
+          <input
+            id="username"
+            name="username"
+            class="input"
+            [(ngModel)]="username"
+            placeholder="admin ou luciano"
+            autocomplete="username"
+          />
+        </div>
 
-    <button type="submit">Entrar</button>
+        <div class="field">
+          <label class="label" for="password">Senha</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            class="input"
+            [(ngModel)]="password"
+            placeholder="admin123 ou 123"
+            autocomplete="current-password"
+          />
+        </div>
 
-    <p *ngIf="error" style="color: red">{{ error }}</p>
-  </form>
-</section>
+        <div class="actions">
+        <button class="btn btn-primary" type="submit" [disabled]="loading">
+          {{ loading ? 'Validando...' : 'Entrar' }}
+        </button>
+        </div>
+
+        <div *ngIf="error" class="alert alert-error">
+          {{ error }}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

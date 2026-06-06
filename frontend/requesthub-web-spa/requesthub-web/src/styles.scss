@@ -1,1 +1,61 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --bg: #0b1020;
+  --surface: #121a33;
+  --text: #e8ecff;
+  --muted: #aab3d6;
+
+  --primary: #6c7cff;
+  --primary-600: #5565ff;
+
+  --border: rgba(255,255,255,.12);
+  --radius: 14px;
+}
+
+/* reset leve */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, Segoe UI, Roboto, Arial;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* layout base */
+.container {
+  width: min(980px, calc(100% - 32px));
+  margin: 0 auto;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+/* inputs e botões */
+.input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.04);
+  color: var(--text);
+}
+.input:focus {
+  outline: none;
+  border-color: rgba(108,124,255,.6);
+}
+
+.btn {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 0;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn-primary {
+  background: var(--primary);
+  color: #0b1020;
+}
+.btn-primary:hover { background: var(--primary-600); }
+
