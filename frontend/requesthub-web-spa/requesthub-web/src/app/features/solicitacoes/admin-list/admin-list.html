@@ -5,11 +5,14 @@
       <p class="muted">Visão do administrador (todas as solicitações).</p>
     </div>
 
-    <!-- Trocar usuário: vai pro login e limpa credencial -->
-    <a class="btn btn-ghost" routerLink="/login" (click)="trocarUsuario()">
+    <button class="btn btn-ghost btn-sm" type="button" (click)="trocarUsuario()">
       Trocar usuário
-    </a>
+    </button>
   </header>
+
+  <div *ngIf="mensagem" class="alert feedback">
+    {{ mensagem }}
+  </div>
 
   <ng-container *ngIf="solicitacoes$ | async as solicitacoes; else loading">
     <p *ngIf="solicitacoes.length === 0" class="muted">
@@ -18,7 +21,7 @@
 
     <div class="cards" *ngIf="solicitacoes.length > 0">
       <article class="ticket" *ngFor="let s of solicitacoes">
-        <!-- topo do card -->
+        <!-- TOPO -->
         <div class="ticket-top">
           <div>
             <div class="ticket-title">{{ s.nome }}</div>
@@ -27,33 +30,58 @@
             </div>
           </div>
 
-          <span class="badge"
-                [ngClass]="{
-                  'badge-open': s.status === 'ABERTA',
-                  'badge-progress': s.status === 'EM_ANDAMENTO',
-                  'badge-done': s.status === 'FINALIZADA'
-                }">
-            {{ s.status }}
-          </span>
+          <!-- STATUS (badge clicável) -->
+          <div class="status-wrap">
+            <button
+              type="button"
+              class="badge status-btn"
+              [ngClass]="{
+                'badge-open': s.status === 'ABERTA',
+                'badge-progress': s.status === 'EM_ANDAMENTO',
+                'badge-done': s.status === 'FINALIZADA'
+              }"
+              (click)="toggleStatusMenu(s.id)"
+            >
+              {{ s.status }} ▾
+            </button>
+
+            <div class="status-menu" *ngIf="menuStatusAbertoId === s.id">
+              <!-- só mostra a próxima opção válida -->
+              <button
+                *ngIf="s.status === 'ABERTA'"
+                type="button"
+                class="status-option"
+                (click)="alterarStatus(s.id, 'EM_ANDAMENTO')"
+              >
+                Em andamento
+              </button>
+
+              <button
+                *ngIf="s.status === 'EM_ANDAMENTO'"
+                type="button"
+                class="status-option"
+                (click)="alterarStatus(s.id, 'FINALIZADA')"
+              >
+                Finalizada
+              </button>
+
+              <div *ngIf="s.status === 'FINALIZADA'" class="status-option disabled">
+                Já finalizada
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- descrição -->
+        <!-- CORPO -->
         <div class="ticket-desc">
           {{ s.descricao }}
         </div>
 
-        <!-- ações (já deixa espaço pra status/deletar/editar) -->
+        <!-- AÇÕES -->
         <div class="ticket-actions">
-        <!--  <a class="btn btn-ghost btn-sm"
-             [routerLink]="['/solicitacoes', s.id, 'editar']">
-            Editar
-          </a> -->
-
-
-<button type="button" class="btn btn-danger btn-sm" (click)="confirmarExcluir(s.id)">
-  Excluir
-</button>
-
+          <button type="button" class="btn btn-danger btn-sm" (click)="confirmarExcluir(s.id)">
+            Excluir
+          </button>
         </div>
       </article>
     </div>

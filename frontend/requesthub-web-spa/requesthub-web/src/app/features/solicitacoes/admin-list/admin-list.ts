@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 import { SolicitacaoApiService } from '../../../core/services/solicitacao-api';
 import { SolicitacaoResponse } from '../../../core/models/solicitacao-response';
 import { AuthService } from '../../../core/services/auth';
+
+type StatusSolicitacao = 'ABERTA' | 'EM_ANDAMENTO' | 'FINALIZADA';
 
 @Component({
   selector: 'app-admin-list',
@@ -18,9 +20,13 @@ export class AdminListComponent {
   public solicitacoes$: Observable<SolicitacaoResponse[]>;
   public mensagem: string | null = null;
 
+  // controla qual card está com o menu aberto
+  public menuStatusAbertoId: string | null = null;
+
   constructor(
     private api: SolicitacaoApiService,
-    private auth: AuthService
+    private auth: AuthService,
+    private router: Router
   ) {
     this.solicitacoes$ = this.api.listarTodas();
   }
@@ -31,7 +37,8 @@ export class AdminListComponent {
 
   trocarUsuario(): void {
     this.auth.logout();
-    // o routerLink já navega; aqui só limpa credencial
+    this.menuStatusAbertoId = null;
+    this.router.navigateByUrl('/login');
   }
 
   confirmarExcluir(id: string): void {
@@ -55,6 +62,36 @@ export class AdminListComponent {
           return;
         }
         this.mensagem = 'Erro ao excluir solicitação.';
+      }
+    });
+  }
+
+  toggleStatusMenu(id: string): void {
+    this.mensagem = null;
+    this.menuStatusAbertoId = (this.menuStatusAbertoId === id) ? null : id;
+  }
+
+  alterarStatus(id: string, novoStatus: StatusSolicitacao): void {
+    this.mensagem = null;
+
+    this.api.alterarStatus(id, { novoStatus }).subscribe({
+      next: () => {
+        this.menuStatusAbertoId = null; // fecha o menu
+        this.recarregar();              // atualiza card e badge
+        this.mensagem = 'Status atualizado com sucesso.';
+      },
+      error: (err) => {
+        this.menuStatusAbertoId = null;
+
+        if (err.status === 409) {
+          this.mensagem = 'Transição inválida de status (siga a ordem ABERTA → EM_ANDAMENTO → FINALIZADA).';
+          return;
+        }
+        if (err.status === 403) {
+          this.mensagem = 'Acesso negado: somente ADMIN pode alterar status.';
+          return;
+        }
+        this.mensagem = 'Erro ao atualizar status.';
       }
     });
   }

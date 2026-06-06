@@ -1,18 +1,17 @@
 /* ======= Admin List (Cards) ======= */
 
 .page {
-  padding: 34px 0; /* desce os cards um pouco e dá respiro */
+  padding: 34px 0;
 }
 
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* melhor alinhamento do botão "trocar usuário" */
+  align-items: center;
   gap: 16px;
   margin-bottom: 18px;
 }
 
-/* título com mais presença */
 .title {
   font-size: 26px;
   font-weight: 900;
@@ -26,7 +25,16 @@
   margin: 6px 0 0;
 }
 
-/* grid maior (cards mais largos) */
+/* botão do header mais “premium” */
+.page-header .btn-ghost {
+  border: 1px solid var(--border);
+  background: white;
+}
+.page-header .btn-ghost:hover {
+  background: rgba(255,255,255,.08);
+}
+
+/* grid */
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
@@ -34,7 +42,7 @@
   margin-top: 8px;
 }
 
-/* card “premium” */
+/* card */
 .ticket {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -50,7 +58,6 @@
   border-color: rgba(108, 124, 255, 0.22);
 }
 
-/* topo do card */
 .ticket-top {
   display: flex;
   justify-content: space-between;
@@ -59,21 +66,18 @@
   margin-bottom: 12px;
 }
 
-/* nome em destaque */
 .ticket-title {
   font-size: 17px;
   font-weight: 900;
   line-height: 1.2;
 }
 
-/* data/hora mais discreta */
 .ticket-sub {
   font-size: 12px;
   opacity: 0.65;
   margin-top: 4px;
 }
 
-/* descrição com leitura boa */
 .ticket-desc {
   font-size: 14.5px;
   line-height: 1.5;
@@ -82,37 +86,81 @@
   word-break: break-word;
 }
 
-/* ======= Badge (STATUS) ======= */
-/* ATENÇÃO: é .badge (classe), não "badge" (tag) */
+/* ======= Badge ======= */
 .badge {
   font-size: 12px;
   padding: 6px 10px;
   border-radius: 999px;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.04);
+  background:rgba(180, 18, 18, 0.04);
   white-space: nowrap;
   font-weight: 700;
+   color: var(--text); /* fallback */
 }
 
-/* ABERTA: azul */
 .badge-open {
   border-color: rgba(108, 124, 255, 0.55);
   background: rgba(108, 124, 255, 0.08);
+  color: rgba(200, 210, 255, 0.95);
 }
 
-/* EM_ANDAMENTO: amarelo */
 .badge-progress {
   border-color: rgba(255, 193, 7, 0.55);
   background: rgba(255, 193, 7, 0.08);
+  color: rgba(255, 230, 160, 0.95);
 }
 
-/* FINALIZADA: verde */
 .badge-done {
   border-color: rgba(34, 197, 94, 0.55);
-  background: rgba(34, 197, 94, 0.08);
+  background: rgba(0, 224, 82, 0.08);
+  color: rgba(190, 255, 210, 0.95);
 }
 
-/* ======= Ações ======= */
+/* ======= Status dropdown ======= */
+.status-wrap {
+  position: relative;
+}
+
+.status-btn {
+  cursor: pointer;
+}
+
+.status-menu {
+  position: absolute;
+  top: 34px;
+  right: 0;
+  display: grid;
+  gap: 8px;
+  min-width: 170px;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 14px 38px rgba(0,0,0,.28);
+  z-index: 20;
+}
+
+.status-option {
+  width: 100%;
+  text-align: left;
+  padding: 9px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.status-option:hover {
+  background: rgba(255,255,255,.08);
+}
+
+.status-option.disabled {
+  opacity: .7;
+  cursor: default;
+}
+
+/* ======= Actions ======= */
 .ticket-actions {
   display: flex;
   gap: 10px;
@@ -126,14 +174,10 @@
   border-radius: 10px;
 }
 
-/* mensagem de erro/sucesso */
 .feedback {
   margin-top: 12px;
 }
 
-/* responsivo (mobile) */
 @media (max-width: 420px) {
-  .cards {
-    grid-template-columns: 1fr;
-  }
+  .cards { grid-template-columns: 1fr; }
 }
