@@ -41,6 +41,7 @@
                 'badge-done': s.status === 'FINALIZADA'
               }"
               (click)="toggleStatusMenu(s.id)"
+              [disabled]="carregando"
             >
               {{ s.status }} ▾
             </button>
@@ -52,6 +53,7 @@
                 type="button"
                 class="status-option"
                 (click)="alterarStatus(s.id, 'EM_ANDAMENTO')"
+                [disabled]="carregando"
               >
                 Em andamento
               </button>
@@ -61,6 +63,7 @@
                 type="button"
                 class="status-option"
                 (click)="alterarStatus(s.id, 'FINALIZADA')"
+                [disabled]="carregando"
               >
                 Finalizada
               </button>
@@ -79,9 +82,23 @@
 
         <!-- AÇÕES -->
         <div class="ticket-actions">
-          <button type="button" class="btn btn-danger btn-sm" (click)="confirmarExcluir(s.id)">
+          <!-- ✅ Só mostra excluir se ABERTA -->
+          <button
+            *ngIf="s.status === 'ABERTA'; else naoPodeExcluir"
+            type="button"
+            class="btn btn-danger btn-sm"
+            (click)="confirmarExcluir(s.id)"
+            [disabled]="carregando"
+          >
             Excluir
           </button>
+
+          <!-- ✅ Quando não é ABERTA, mostra aviso discreto -->
+          <ng-template #naoPodeExcluir>
+            <span class="muted small">
+              Só é possível excluir quando estiver ABERTA
+            </span>
+          </ng-template>
         </div>
       </article>
     </div>

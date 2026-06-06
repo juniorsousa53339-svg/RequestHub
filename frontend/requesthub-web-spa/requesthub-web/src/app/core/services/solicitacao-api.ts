@@ -19,6 +19,10 @@ export class SolicitacaoApiService {
     return this.http.get<SolicitacaoResponse[]>(this.baseUrl);
   }
 
+public minhas(): Observable<SolicitacaoResponse[]> {
+    return this.http.get<SolicitacaoResponse[]>(`${this.baseUrl}/minhas`);
+  }
+
   /** SOLICITANTE: criar */
   public criar(payload: CriarSolicitacaoRequest): Observable<SolicitacaoResponse> {
     return this.http.post<SolicitacaoResponse>(this.baseUrl, payload);

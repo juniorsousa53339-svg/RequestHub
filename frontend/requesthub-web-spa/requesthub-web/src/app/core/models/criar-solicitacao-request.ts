@@ -1,1 +1,4 @@
-export interface CriarSolicitacaoRequest {}
+export interface CriarSolicitacaoRequest {
+  nome: string;
+  descricao: string;
+}

@@ -1,1 +1,4 @@
-export interface AlterarSolicitacaoRequest {}
+export interface AlterarSolicitacaoRequest {
+  nome: string;
+  descricao: string;
+}

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable } from 'rxjs';
 import { Router, RouterModule } from '@angular/router';
+import { Observable, BehaviorSubject, switchMap, finalize } from 'rxjs';
 
 import { SolicitacaoApiService } from '../../../core/services/solicitacao-api';
 import { SolicitacaoResponse } from '../../../core/models/solicitacao-response';
@@ -17,28 +17,40 @@ type StatusSolicitacao = 'ABERTA' | 'EM_ANDAMENTO' | 'FINALIZADA';
   styleUrls: ['./admin-list.scss'],
 })
 export class AdminListComponent {
-  public solicitacoes$: Observable<SolicitacaoResponse[]>;
+
   public mensagem: string | null = null;
+  public carregando = false;
 
   // controla qual card está com o menu aberto
   public menuStatusAbertoId: string | null = null;
+
+  // ===== Lista reativa (fluidez) =====
+  private refresh$ = new BehaviorSubject<void>(undefined);
+
+  public solicitacoes$: Observable<SolicitacaoResponse[]> = this.refresh$.pipe(
+    switchMap(() => this.api.listarTodas())
+  );
 
   constructor(
     private api: SolicitacaoApiService,
     private auth: AuthService,
     private router: Router
-  ) {
-    this.solicitacoes$ = this.api.listarTodas();
-  }
+  ) {}
 
   private recarregar(): void {
-    this.solicitacoes$ = this.api.listarTodas();
+    this.refresh$.next();
   }
 
   trocarUsuario(): void {
     this.auth.logout();
+    this.mensagem = null;
     this.menuStatusAbertoId = null;
     this.router.navigateByUrl('/login');
+  }
+
+  toggleStatusMenu(id: string): void {
+    this.mensagem = null;
+    this.menuStatusAbertoId = (this.menuStatusAbertoId === id) ? null : id;
   }
 
   confirmarExcluir(id: string): void {
@@ -47,17 +59,21 @@ export class AdminListComponent {
     const ok = confirm('Tem certeza que deseja excluir esta solicitação?');
     if (!ok) return;
 
-    this.api.deletar(id).subscribe({
+    this.carregando = true;
+
+    this.api.deletar(id).pipe(
+      finalize(() => this.carregando = false)
+    ).subscribe({
       next: () => {
-        this.recarregar();
         this.mensagem = 'Solicitação excluída com sucesso.';
+        this.recarregar();
       },
       error: (err) => {
-        if (err.status === 409) {
+        if (err?.status === 409) {
           this.mensagem = 'Não foi possível excluir: a solicitação não está ABERTA.';
           return;
         }
-        if (err.status === 403) {
+        if (err?.status === 403) {
           this.mensagem = 'Acesso negado: somente ADMIN pode excluir.';
           return;
         }
@@ -66,28 +82,25 @@ export class AdminListComponent {
     });
   }
 
-  toggleStatusMenu(id: string): void {
-    this.mensagem = null;
-    this.menuStatusAbertoId = (this.menuStatusAbertoId === id) ? null : id;
-  }
-
   alterarStatus(id: string, novoStatus: StatusSolicitacao): void {
     this.mensagem = null;
+    this.menuStatusAbertoId = null; // fecha menu logo ao clicar (UX melhor)
 
-    this.api.alterarStatus(id, { novoStatus }).subscribe({
+    this.carregando = true;
+
+    this.api.alterarStatus(id, { novoStatus }).pipe(
+      finalize(() => this.carregando = false)
+    ).subscribe({
       next: () => {
-        this.menuStatusAbertoId = null; // fecha o menu
-        this.recarregar();              // atualiza card e badge
         this.mensagem = 'Status atualizado com sucesso.';
+        this.recarregar();
       },
       error: (err) => {
-        this.menuStatusAbertoId = null;
-
-        if (err.status === 409) {
-          this.mensagem = 'Transição inválida de status (siga a ordem ABERTA → EM_ANDAMENTO → FINALIZADA).';
+        if (err?.status === 409) {
+          this.mensagem = 'Transição inválida (ABERTA → EM_ANDAMENTO → FINALIZADA).';
           return;
         }
-        if (err.status === 403) {
+        if (err?.status === 403) {
           this.mensagem = 'Acesso negado: somente ADMIN pode alterar status.';
           return;
         }
