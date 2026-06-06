@@ -6,11 +6,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @Getter @Setter
 public class SolicitacaoResponse {
 
+    private UUID id;
     private String nome;
     private String descricao;
     private StatusSolicitacao status;
@@ -19,6 +21,7 @@ public class SolicitacaoResponse {
 
     public static SolicitacaoResponse fromEntity(Solicitacao s) {
         SolicitacaoResponse r = new SolicitacaoResponse();
+        r.id = s.getId();
         r.setNome(s.getNome());
         r.setDescricao(s.getDescricao());
         r.setStatus(s.getStatus());
