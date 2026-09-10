@@ -1,104 +1,153 @@
 # RequestHub
 
-Sistema de gerenciamento de solicitações internas desenvolvido com Java, Spring Boot e Angular.
+Sistema full stack para gerenciamento de solicitações internas, com fluxo de status controlado, autenticação e autorização por perfil.
 
-## Sobre o projeto
+![Java](https://img.shields.io/badge/Java-21-orange)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-Framework-brightgreen)
+![Angular](https://img.shields.io/badge/Angular-21-red)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
+![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED)
+![AWS EC2](https://img.shields.io/badge/AWS-EC2-orange)
+![Status](https://img.shields.io/badge/status-primeira%20vers%C3%A3o%20conclu%C3%ADda-brightgreen)
 
-O RequestHub é uma aplicação voltada para gerenciamento de solicitações e fluxo interno de atendimento, permitindo controle de usuários, autenticação, autorização e gerenciamento de status das solicitações.
+## Sobre o Projeto
 
-O projeto foi desenvolvido com foco em organização de arquitetura, separação de responsabilidades e boas práticas utilizadas em aplicações corporativas.
+O **RequestHub** é uma aplicação full stack que representa um fluxo simples de atendimento: um usuário registra uma solicitação e acompanha sua evolução até a conclusão.
 
----
+O projeto conta com backend em **Java + Spring Boot**, frontend em **Angular**, persistência em **PostgreSQL**, containerização com **Docker/Docker Compose** e deploy em uma instância **AWS EC2**.
 
-## Tecnologias
+O sistema possui dois perfis principais:
+
+| Perfil | Responsabilidade |
+|---|---|
+| `SOLICITANTE` | Cria e altera suas próprias solicitações |
+| `ADMIN` | Gerencia administrativamente as solicitações |
+
+## Fluxo de Status
+
+```
+ABERTA → EM_ANDAMENTO → FINALIZADA
+```
+
+As transições são controladas por regras de negócio, impedindo que uma solicitação avance etapas ou seja alterada/excluída fora das condições permitidas.
+
+| Status | Pode alterar | Pode excluir |
+|---|---|---|
+| ABERTA | ✅ | ✅ |
+| EM_ANDAMENTO | ✅ | ❌ |
+| FINALIZADA | ❌ | ❌ |
+
+## Arquitetura
+
+```
+Usuário → Angular → (HTTP) → Spring Boot → Spring Data JPA → PostgreSQL
+```
+
+```
+RequestHub/
+├── backend/        # API REST em Spring Boot
+├── frontend/       # SPA em Angular servida via Nginx
+└── docker-compose.yml
+```
 
 ### Backend
-- Java
-- Spring Boot
-- Spring Web
-- Spring Data JPA
-- Spring Security
-- Validation
-- Lombok
-- H2 Database
+
+Organização orientada a domínio:
+
+```
+com/RequestHub/request_hub/
+├── infrastructure/
+│   ├── exception/      # BusinessException, NotFoundException, GlobalExceptionHandler
+│   └── security/       # SecurityConfig
+└── solicitacao/
+    ├── controller/
+    ├── domain/          # Solicitacao, StatusSolicitacao
+    ├── dto/
+    ├── repository/
+    └── service/
+```
 
 ### Frontend
-- Angular
-- TypeScript
-- Angular Material
 
----
+Angular 21 + TypeScript + RxJS + Angular Router/Forms, com testes via Vitest, compilado e servido por Nginx em produção.
 
 ## Funcionalidades
 
-- Cadastro de solicitações
-- Controle de status
-- Autenticação e autorização
-- Perfis de usuário e administrador
-- Validação de dados
-- API REST
-- Fluxo de gerenciamento de solicitações
+- Criar, consultar, alterar e excluir solicitações
+- Fluxo controlado de status (`ABERTA` → `EM_ANDAMENTO` → `FINALIZADA`)
+- Validação de dados de entrada (Jakarta Bean Validation)
+- Autenticação com Spring Security (HTTP Basic)
+- Autorização baseada em roles (`@PreAuthorize`)
+- DTOs de entrada/saída para desacoplar API e domínio
+- Tratamento global de exceções
+- Testes automatizados no backend e frontend
 
----
+## Endpoints
 
-## Estrutura do projeto
+| Método | Rota | Perfil |
+|---|---|---|
+| `POST` | `/solicitacoes` | SOLICITANTE |
+| `GET` | `/solicitacoes` | ADMIN |
+| `PUT` | `/solicitacoes/{id}` | SOLICITANTE |
+| `PUT` | `/solicitacoes/{id}/status` | ADMIN |
+| `DELETE` | `/solicitacoes/{id}` | ADMIN |
+| `GET` | `/solicitacoes/auth/me` | Autenticado |
 
-O backend segue uma arquitetura organizada por domínio, separando responsabilidades entre:
+## Tecnologias
 
-```text
-controller
-service
-repository
-dto
-domain
-security
-config
-exception
-```
+**Backend:** Java, Spring Boot, Spring Web MVC, Spring Data JPA, Hibernate, Spring Security, Jakarta Validation, Lombok, H2, PostgreSQL, Maven
 
----
+**Frontend:** Angular 21, TypeScript, RxJS, Angular Router, Angular Forms, Vitest
 
-## Segurança
+**Infraestrutura:** Docker, Docker Compose, Nginx, AWS EC2
 
-A autenticação e autorização serão implementadas utilizando Spring Security, com controle de acesso baseado em perfis de usuário.
+## Como Executar
 
----
+### Pré-requisitos
 
-## Executando o projeto
+- **Local:** Java 21, Maven, Node.js, npm, Angular CLI
+- **Docker:** Docker e Docker Compose
 
 ### Backend
 
 ```bash
-./mvnw spring-boot:run
+cd backend
+./mvnw spring-boot:run      # Linux/macOS
+mvnw.cmd spring-boot:run    # Windows
 ```
 
 ### Frontend
 
 ```bash
+cd frontend/requesthub-web-spa/requesthub-web
 npm install
-ng serve
+npm start
 ```
 
----
+### Com Docker Compose
 
-## Banco de dados
-
-Durante o desenvolvimento, o projeto utiliza H2 Database para testes locais.
-
-Console H2:
-
-```text
-http://localhost:8080/h2-console
+```bash
+docker compose up --build       # executar
+docker compose up --build -d    # em segundo plano
+docker compose down              # parar
+docker compose down -v           # parar e remover volumes
 ```
 
----
+## Banco de Dados
 
-## Objetivo
+- **Desenvolvimento e testes:** H2
+- **Docker / produção:** PostgreSQL (com volume para persistência)
 
-O objetivo deste projeto é aplicar conceitos modernos de desenvolvimento backend e frontend, utilizando práticas comuns em aplicações corporativas e arquitetura organizada por domínio.
+## Roadmap
 
----
+- [ ] Evolução da cobertura de testes
+- [ ] Melhorias de segurança
+- [ ] CI/CD
+- [ ] Melhorias de UX/UI
+- [ ] Deploy automatizado
 
 ## Autor
 
-Luciano
+Desenvolvido por **Luciano**
+
+[GitHub](https://github.com/)
